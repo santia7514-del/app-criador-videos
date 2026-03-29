@@ -1,34 +1,66 @@
-const express = require("express");
-const cors = require("cors");
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gerador de Roteiro</title>
+</head>
 
-const app = express();
+<body style="background:black; color:white; text-align:center; font-family:sans-serif;">
 
-app.use(cors());
-app.use(express.json());
+<h1>Gerador de Roteiro</h1>
 
-// ROTA PRINCIPAL (TESTE)
-app.get("/", (req, res) => {
-  res.send("API funcionando");
-});
+<input id="produto" placeholder="Digite o produto"><br><br>
+<input id="link" placeholder="Cole o link do produto"><br><br>
 
-// ROTA GERAR (ESSA É A IMPORTANTE)
-app.post("/gerar", (req, res) => {
-  const { produto, link } = req.body;
+<button onclick="gerar()">GERAR</button>
 
-  const resultado = `
-<h2>VÍDEO 1 - GANCHO FORTE</h2>
-<p><strong>GANCHO:</strong> Antes de comprar ${produto}, olha isso aqui...</p>
-<p><strong>DOR:</strong> Eu tentei resolver isso de várias formas e nada funcionava</p>
-<p><strong>SOLUÇÃO:</strong> Depois que usei isso, resolveu em segundos</p>
-<p><strong>PROVA:</strong> Olha isso funcionando na prática</p>
-<p><strong>CTA:</strong> Compre aqui 👉 ${link}</p>
-`;
+<div id="resultado" style="margin-top:20px;"></div>
 
-  res.json({ resultado });
-});
+<script>
 
-const PORT = process.env.PORT || 3000;
+function gerar() {
 
-app.listen(PORT, () => {
-  console.log("Servidor rodando na porta " + PORT);
-});
+  var produto = document.getElementById("produto").value;
+  var link = document.getElementById("link").value;
+
+  fetch("https://criador-videos-api.onrender.com/gerar", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      produto: produto,
+      link: link
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    let html = `<h2>ROTEIRO</h2><pre>${data.roteiro}</pre>`;
+
+    html += `<h2>CENAS</h2>`;
+
+    data.cenas.forEach(c => {
+      html += `
+        <div style="margin-bottom:20px;">
+          <strong>CENA ${c.cena}</strong><br>
+          📷 ${c.texto}<br>
+          🎤 ${c.narracao}
+        </div>
+      `;
+    });
+
+    html += `<h2>LEGENDA</h2><p>${data.legenda}</p>`;
+
+    document.getElementById("resultado").innerHTML = html;
+
+  })
+  .catch(() => {
+    document.getElementById("resultado").innerHTML = "Erro ao gerar conteúdo";
+  });
+
+}
+
+</script>
+
+</body>
+</html>
