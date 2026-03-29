@@ -1,46 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Gerador de Roteiro</title>
-</head>
+const express = require("express");
+const cors = require("cors");
 
-<body style="background:black; color:white; text-align:center; font-family:sans-serif;">
+const app = express();
 
-<h1>Gerador de Roteiro</h1>
+app.use(cors());
+app.use(express.json());
 
-<input id="produto" placeholder="Digite o produto"><br><br>
-<input id="link" placeholder="Cole o link do produto"><br><br>
+// ROTA PRINCIPAL (TESTE)
+app.get("/", (req, res) => {
+  res.send("API funcionando");
+});
 
-<button onclick="gerar()">GERAR</button>
+// ROTA GERAR (ESSA É A IMPORTANTE)
+app.post("/gerar", (req, res) => {
+  const { produto, link } = req.body;
 
-<div id="resultado" style="margin-top:20px;"></div>
+  const resultado = `
+<h2>VÍDEO 1 - GANCHO FORTE</h2>
+<p><strong>GANCHO:</strong> Antes de comprar ${produto}, olha isso aqui...</p>
+<p><strong>DOR:</strong> Eu tentei resolver isso de várias formas e nada funcionava</p>
+<p><strong>SOLUÇÃO:</strong> Depois que usei isso, resolveu em segundos</p>
+<p><strong>PROVA:</strong> Olha isso funcionando na prática</p>
+<p><strong>CTA:</strong> Compre aqui 👉 ${link}</p>
+`;
 
-<script>
-function gerar() {
+  res.json({ resultado });
+});
 
-  var produto = document.getElementById("produto").value;
-  var link = document.getElementById("link").value;
+const PORT = process.env.PORT || 3000;
 
-  fetch("https://criador-videos-api.onrender.com/gerar", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      produto: produto,
-      link: link
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("resultado").innerHTML = data.resultado;
-  })
-  .catch(error => {
-    document.getElementById("resultado").innerHTML = "Erro ao gerar conteúdo";
-  });
-
-}
-</script>
-
-</body>
-</html>
+app.listen(PORT, () => {
+  console.log("Servidor rodando na porta " + PORT);
+});
