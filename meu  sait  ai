@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gerador de Roteiro</title>
+</head>
+
+<body style="background:black; color:white; text-align:center; font-family:sans-serif;">
+
+<h1>Gerador de Roteiro</h1>
+
+<input id="produto" placeholder="Digite o produto"><br><br>
+<input id="link" placeholder="Cole o link do produto"><br><br>
+
+<button onclick="gerar()">GERAR</button>
+
+<div id="resultado" style="margin-top:20px;"></div>
+
+<script>
+function gerar() {
+
+var produto = document.getElementById("produto").value;
+var link = document.getElementById("link").value;
+
+var texto = `
+<h2>VÍDEO 1</h2>
+GANCHO: Antes de comprar ${produto}, olha isso...
+DOR: Eu sofria com isso
+SOLUÇÃO: Esse produto resolveu rápido
+CTA: ${link}
+`;
+
+document.getElementById("resultado").innerHTML = texto;
+
+}
+</script>
+
+</body>
+</html>
