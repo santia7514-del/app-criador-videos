@@ -18,37 +18,26 @@
 <script>
 function gerar() {
 
-var produto = document.getElementById("produto").value;
-var link = document.getElementById("link").value;
+  var produto = document.getElementById("produto").value;
+  var link = document.getElementById("link").value;
 
-var texto = `
-<h2>VÍDEO 1 - GANCHO FORTE</h2>
-GANCHO: Antes de comprar ${produto}, olha isso aqui...
-DOR: Eu tentei resolver isso de várias formas e nada funcionava
-SOLUÇÃO: Depois que usei isso, resolveu em segundos
-PROVA: Olha isso funcionando na prática
-CTA: Compre aqui → ${link}
-
-<hr>
-
-<h2>VÍDEO 2 - DOR</h2>
-GANCHO: Você não precisa passar por isso
-DOR: A maioria das pessoas sofre com esse problema
-SOLUÇÃO: Com ${produto}, ficou muito mais fácil
-PROVA: Testei e funciona de verdade
-CTA: Compre aqui → ${link}
-
-<hr>
-
-<h2>VÍDEO 3 - DEMONSTRAÇÃO</h2>
-GANCHO: Vou te mostrar isso funcionando agora
-DEMO: Olha o produto em ação
-BENEFÍCIO: Rápido, simples e eficiente
-PROVA: Resultado real
-CTA: Compre aqui → ${link}
-`;
-
-document.getElementById("resultado").innerHTML = texto;
+  fetch("https://criador-videos-api.onrender.com/gerar", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      produto: produto,
+      link: link
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("resultado").innerHTML = data.resultado;
+  })
+  .catch(error => {
+    document.getElementById("resultado").innerHTML = "Erro ao gerar conteúdo";
+  });
 
 }
 </script>
