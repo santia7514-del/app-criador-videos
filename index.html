@@ -35,7 +35,7 @@ function gerar() {
   .then(res => res.json())
   .then(data => {
 
-    let html = `<h2>ROTEIRO</h2><pre>${data.roteiro}</pre>`;
+  let html = `<h2>ROTEIRO</h2><pre style="white-space: pre-wrap; text-align:left;">${data.roteiro}</pre>`;
 
     html += `<h2>CENAS</h2>`;
 
