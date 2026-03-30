@@ -1,66 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-  <title>Gerador de Roteiro</title>
+  <meta charset="UTF-8">
+  <title>Gerador de Roteiros</title>
 </head>
+<body style="font-family: Arial; padding:20px; background:#111; color:#fff;">
 
-<body style="background:black; color:white; text-align:center; font-family:sans-serif;">
+  <h1>Gerador de Roteiro + VEO3</h1>
 
-<h1>Gerador de Roteiro</h1>
+  <input id="produto" placeholder="Digite o produto" style="padding:10px; width:300px;">
+  <button onclick="gerar()" style="padding:10px;">Gerar</button>
 
-<input id="produto" placeholder="Digite o produto"><br><br>
-<input id="link" placeholder="Cole o link do produto"><br><br>
+  <div id="resultado" style="margin-top:20px;"></div>
 
-<button onclick="gerar()">GERAR</button>
+  <script>
+    async function gerar() {
+      const produto = document.getElementById("produto").value;
 
-<div id="resultado" style="margin-top:20px;"></div>
+      document.getElementById("resultado").innerHTML = "Gerando...";
 
-<script>
+      const res = await fetch("https://SEU-BACKEND.onrender.com/gerar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ produto })
+      });
 
-function gerar() {
+      const data = await res.json();
 
-  var produto = document.getElementById("produto").value;
-  var link = document.getElementById("link").value;
+      let html = `<h2>ROTEIRO</h2>
+      <pre style="white-space: pre-wrap;">${data.roteiro}</pre>`;
 
-  fetch("https://criador-videos-api.onrender.com/gerar", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      produto: produto,
-      link: link
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
+      html += `<h2>CENAS</h2>`;
 
-  let html = `<h2>ROTEIRO</h2><pre style="white-space: pre-wrap; text-align:left;">${data.roteiro}</pre>`;
-
-    html += `<h2>CENAS</h2>`;
-
-    data.cenas.forEach(c => {
-      html += `
+      data.cenas.forEach(c => {
+        html += `
         <div style="margin-bottom:20px;">
           <strong>CENA ${c.cena}</strong><br>
-          📷 ${c.texto}<br>
+          📺 ${c.texto}<br>
           🎤 ${c.narracao}
-        </div>
-      `;
-    });
+        </div>`;
+      });
 
-    html += `<h2>LEGENDA</h2><p>${data.legenda}</p>`;
+      html += `<h2>LEGENDA</h2><p>${data.legenda}</p>`;
 
-    document.getElementById("resultado").innerHTML = html;
+      html += `<h2>PROMPT VEO3</h2>
+      <pre style="white-space: pre-wrap; background:#000; padding:10px;">
+      ${data.prompt_veo3}
+      </pre>`;
 
-  })
-  .catch(() => {
-    document.getElementById("resultado").innerHTML = "Erro ao gerar conteúdo";
-  });
-
-}
-
-</script>
+      document.getElementById("resultado").innerHTML = html;
+    }
+  </script>
 
 </body>
 </html>
